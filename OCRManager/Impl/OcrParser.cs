@@ -8,6 +8,8 @@ namespace OCRManager.Impl
     {
         private const int _lineLength = 27;
 
+        public string UnknownDigit => "?";
+
         public string ParseInput(string input)
         {
             ICollection<StringBuilder> digits = new List<StringBuilder>(9)
@@ -43,7 +45,7 @@ namespace OCRManager.Impl
                     .Replace(' ', '0')
                     .ToString());
 
-            return string.Concat(parsedStrings.Select(DigitHelper.GetDigitString)).Replace("-1", "?");
+            return string.Concat(parsedStrings.Select(DigitHelper.GetDigitString)).Replace("-1", UnknownDigit);
         }
 
         private void ParseFirstLine(string firstLine, ICollection<StringBuilder> digits)

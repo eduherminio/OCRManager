@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -32,7 +33,7 @@ namespace OCRManager.Impl
 
             StringBuilder result = new StringBuilder(ocr);
 
-            if (ocr.Contains("?"))
+            if (ocr.Contains(_ocrParser.UnknownDigit))
             {
                 result.Append(" ILL");
             }
@@ -42,6 +43,25 @@ namespace OCRManager.Impl
             }
 
             return result.ToString();
+        }
+
+        public string ValidateAndTryToFixOcr(string input)
+        {
+            string ocr = _ocrParser.ParseInput(input);
+
+            if (!ocr.Contains(_ocrParser.UnknownDigit) && IsValidOcr(ocr))
+            {
+                return ocr;
+            }
+            else
+            {
+                return AmmendOcr(ocr);
+            }
+        }
+
+        private string AmmendOcr(string ocr)
+        {
+            throw new NotImplementedException();
         }
     }
 }
