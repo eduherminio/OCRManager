@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace OCRManager.Impl
 {
@@ -23,6 +24,24 @@ namespace OCRManager.Impl
             }
 
             return sum % 11 == 0;
+        }
+
+        public string ValidateOcr(string input)
+        {
+            string ocr = _ocrParser.ParseInput(input);
+
+            StringBuilder result = new StringBuilder(ocr);
+
+            if (ocr.Contains("?"))
+            {
+                result.Append(" ILL");
+            }
+            else if (!IsValidOcr(ocr))
+            {
+                result.Append(" ERR");
+            }
+
+            return result.ToString();
         }
     }
 }

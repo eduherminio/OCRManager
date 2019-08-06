@@ -43,7 +43,7 @@ namespace OCRManager.Impl
                     .Replace(' ', '0')
                     .ToString());
 
-            return string.Concat(parsedStrings.Select(DigitHelper.GetDigitString));
+            return string.Concat(parsedStrings.Select(DigitHelper.GetDigitString)).Replace("-1", "?");
         }
 
         private void ParseFirstLine(string firstLine, ICollection<StringBuilder> digits)
