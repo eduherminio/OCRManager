@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using OCRManager.Impl;
+using Xunit;
 
 namespace OCRManager.Test
 {
@@ -13,7 +14,8 @@ namespace OCRManager.Test
         [InlineData("012345678", false)]
         public void Tests(string accountNumber, bool isValid)
         {
-            Assert.True(false);
+            IOcrService service = new OcrService();
+            Assert.Equal(isValid, service.IsValidOcr(accountNumber));
         }
     }
 }
