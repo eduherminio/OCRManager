@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using OCRManager.Impl;
+using Xunit;
 
 namespace OCRManager.Test
 {
@@ -6,7 +7,7 @@ namespace OCRManager.Test
     {
         [Theory]
         [InlineData(@"
- _  _  _  _  _  _  _  _  _
+ _  _  _  _  _  _  _  _  _ 
 | || || || || || || || || |
 |_||_||_||_||_||_||_||_||_|", "000000000")]
         [InlineData(@"
@@ -18,7 +19,7 @@ namespace OCRManager.Test
  _| _| _| _| _| _| _| _| _|
 |_ |_ |_ |_ |_ |_ |_ |_ |_ ", "222222222")]
         [InlineData(@"
- _  _  _  _  _  _  _  _  _
+ _  _  _  _  _  _  _  _  _ 
  _| _| _| _| _| _| _| _| _|
  _| _| _| _| _| _| _| _| _|", "333333333")]
         [InlineData(@"
@@ -51,7 +52,8 @@ namespace OCRManager.Test
   ||_  _|  | _||_|  ||_| _|", "123456789")]
         public void Tests(string input, string expectedResult)
         {
-            Assert.True(false);
+            IOcrParser parser = new OcrParser();
+            Assert.Equal(expectedResult, parser.ParseInput(input));
         }
     }
 }
