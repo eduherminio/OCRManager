@@ -14,6 +14,13 @@
         string ParseInput(string input);
 
         /// <summary>
+        /// Returns the string that wasn't successfully parsed into a valid digit.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        string ExtractIllFormedDigit(string input);
+
+        /// <summary>
         /// string to represent unknown digits (wrong parsing)
         /// </summary>
         string UnknownDigit { get; }

@@ -12,6 +12,20 @@ namespace OCRManager.Impl
 
         public string ParseInput(string input)
         {
+            IEnumerable<string> parsedStrings = InternalParseInput(input);
+
+            return string.Concat(parsedStrings.Select(DigitHelper.GetDigitString)).Replace(DigitHelper.UnknownDigitString, UnknownDigit);
+        }
+
+        public string ExtractIllFormedDigit(string input)
+        {
+            IEnumerable<string> parsedStrings = InternalParseInput(input);
+
+            return parsedStrings.Single(str => DigitHelper.GetDigitString(str).Contains(DigitHelper.UnknownDigitString));
+        }
+
+        private IEnumerable<string> InternalParseInput(string input)
+        {
             ICollection<StringBuilder> digits = new List<StringBuilder>(9)
             {
                 new StringBuilder(_lineLength), new StringBuilder(_lineLength), new StringBuilder(_lineLength),
@@ -39,13 +53,11 @@ namespace OCRManager.Impl
                 throw new OcrParsingException($"Error parsing raw input {input}");
             }
 
-            IEnumerable<string> parsedStrings = digits.Select(sb =>
+            return digits.Select(sb =>
                 sb.Replace('_', '1')
                     .Replace('|', '1')
                     .Replace(' ', '0')
                     .ToString());
-
-            return string.Concat(parsedStrings.Select(DigitHelper.GetDigitString)).Replace("-1", UnknownDigit);
         }
 
         private void ParseFirstLine(string firstLine, ICollection<StringBuilder> digits)
