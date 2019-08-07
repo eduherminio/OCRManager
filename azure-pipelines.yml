@@ -1,0 +1,20 @@
+# Based on https://github.com/eduherminio/FileParser/blob/master/azure-pipelines.yml
+pool:
+  vmImage: 'windows-2019'
+
+trigger:
+- master
+
+steps:
+
+- bash: dotnet build ./OCRManagerSolution.sln --configuration Release --force --no-incremental
+  displayName: 'Build'
+
+- bash: dotnet test ./OCRManager.Test --logger trx --collect "Code coverage"
+  displayName: 'Run tests'
+
+- task: PublishTestResults@1
+  displayName: 'Publish test results'
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'
