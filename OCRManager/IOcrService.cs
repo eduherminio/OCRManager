@@ -3,11 +3,11 @@
     public interface IOcrService
     {
         /// <summary>
-        /// Checks if an OCR is valid
+        /// Checks if an account number is valid
         /// </summary>
-        /// <param name="parsedOcr"></param>
+        /// <param name="accountNumber"></param>
         /// <returns></returns>
-        bool IsValidOcr(string parsedOcr);
+        bool IsValidAccountNumber(string accountNumber);
 
         /// <summary>
         /// Parses and validates an OCR, returning a parsed version of it together with any possible errors

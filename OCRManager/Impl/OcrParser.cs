@@ -1,98 +1,43 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace OCRManager.Impl
 {
     public class OcrParser : IOcrParser
     {
-        private const int _lineLength = 27;
-
         public string UnknownDigit => "?";
 
         public string ParseInput(string input)
         {
-            IEnumerable<string> parsedStrings = InternalParseInput(input);
+            var parsedStrings = InternalParseInput(input);
 
             return string.Concat(parsedStrings.Select(DigitHelper.GetDigitString)).Replace(DigitHelper.UnknownDigitString, UnknownDigit);
         }
 
         public string ExtractIllFormedDigit(string input)
         {
-            IEnumerable<string> parsedStrings = InternalParseInput(input);
+            var parsedStrings = InternalParseInput(input);
 
             return parsedStrings.Single(str => DigitHelper.GetDigitString(str).Contains(DigitHelper.UnknownDigitString));
         }
 
-        private IEnumerable<string> InternalParseInput(string input)
+        private static IEnumerable<string> InternalParseInput(string input)
         {
-            ICollection<StringBuilder> digits = new List<StringBuilder>(9)
-            {
-                new StringBuilder(_lineLength), new StringBuilder(_lineLength), new StringBuilder(_lineLength),
-                new StringBuilder(_lineLength), new StringBuilder(_lineLength), new StringBuilder(_lineLength),
-                new StringBuilder(_lineLength), new StringBuilder(_lineLength), new StringBuilder(_lineLength)
-            };
+            var lines = input.Split(new[] {"\n"}, StringSplitOptions.None).Skip(1).ToList();
+            var characters = Enumerable.Range(0, 9).Select(x => new char[7]).ToList();
 
-            var inputInLines = input.Replace("\r", string.Empty).Split('\n');
-
-            for (int lineIndex = 1; lineIndex < inputInLines.Length; ++lineIndex)
+            for (var i = 0; i < 9; i++)
             {
-                if (inputInLines[lineIndex]?.Length == 0)
-                {
-                    inputInLines[lineIndex] = new string(' ', _lineLength);
-                }
+                characters[i][0] = lines[0].Length > 0 && lines[0][(i * 3) + 1].Equals('_') ? '1': '0';
+                characters[i][1] = lines[1][(i * 3)].Equals('|') ? '1': '0';
+                characters[i][2] = lines[1][(i * 3) + 1].Equals('_') ? '1': '0';
+                characters[i][3] = lines[1][(i * 3) + 2].Equals('|') ? '1': '0';
+                characters[i][4] = lines[2][(i * 3)].Equals('|') ? '1': '0';
+                characters[i][5] = lines[2][(i * 3) + 1].Equals('_') ? '1': '0';
+                characters[i][6] = lines[2][(i * 3) + 2].Equals('|') ? '1': '0';
             }
-
-            ParseFirstLine(inputInLines.ElementAt(1), digits);
-
-            ParseNonFirstLine(inputInLines.ElementAt(2), digits);
-            ParseNonFirstLine(inputInLines.ElementAt(3), digits);
-
-            if (digits.GroupBy(d => d.Length).Single().Key != DigitHelper.DigitSize)
-            {
-                throw new OcrParsingException($"Error parsing raw input {input}");
-            }
-
-            return digits.Select(sb =>
-                sb.Replace('_', '1')
-                    .Replace('|', '1')
-                    .Replace(' ', '0')
-                    .ToString());
-        }
-
-        private void ParseFirstLine(string firstLine, ICollection<StringBuilder> digits)
-        {
-            int counter = 0;
-            foreach (char ch in firstLine)
-            {
-                if (counter % 3 != 1)
-                {
-                    ++counter;
-                    counter %= _lineLength;
-                    continue;
-                }
-
-                counter = ParseCharacter(digits, counter, ch);
-            }
-        }
-
-        private void ParseNonFirstLine(string line, ICollection<StringBuilder> digits)
-        {
-            int counter = 0;
-            foreach (char ch in line)
-            {
-                counter = ParseCharacter(digits, counter, ch);
-            }
-        }
-
-        private static int ParseCharacter(ICollection<StringBuilder> digits, int counter, char ch)
-        {
-            int digit = counter / 3;
-            digits.ElementAt(digit).Append(ch);
-
-            ++counter;
-            counter %= _lineLength;
-            return counter;
+            return characters.Select(x => new string(x));
         }
     }
 }

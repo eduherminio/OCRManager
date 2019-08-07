@@ -15,7 +15,7 @@ namespace OCRManager.Test
         public void Tests(string accountNumber, bool isValid)
         {
             IOcrService service = new OcrService();
-            Assert.Equal(isValid, service.IsValidOcr(accountNumber));
+            Assert.Equal(isValid, service.IsValidAccountNumber(accountNumber));
         }
     }
 }
