@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,7 +24,11 @@ namespace OCRManager.Impl
 
         private static IEnumerable<string> InternalParseInput(string input)
         {
-            var lines = input.Split(new[] {"\n"}, StringSplitOptions.None).Skip(1).ToList();
+            var lines = input.Split(new[] { "\n" }, StringSplitOptions.None)
+                .Skip(1)
+                .Select(line => line.Replace("\r", string.Empty))
+                .ToList();
+
             var characters = Enumerable.Range(0, 9).Select(x => new char[7]).ToList();
 
             for (var i = 0; i < 9; i++)
